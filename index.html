@@ -72,6 +72,58 @@
 
   @media (prefers-reduced-motion: reduce){
     *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+    .fog-intro{ display:none !important; }
+  }
+
+  /* ---------- FOG INTRO ---------- */
+  .fog-intro{
+    position:fixed; inset:0; z-index:500;
+    overflow:hidden;
+    pointer-events:none;
+    background: #1a1d27;
+    transition: opacity 3.8s ease, transform 4s cubic-bezier(.5,0,.3,1);
+  }
+  .fog-intro.lifting{
+    opacity:0;
+    transform: scale(1.15);
+  }
+
+  .fog-mist{
+    position:absolute;
+    top:-30%; left:-30%;
+    width:160%; height:160%;
+    background-color:#262a37;
+    background-image:
+      radial-gradient(ellipse 38% 26% at 8% 15%,  rgba(255,255,255,0.95), transparent 68%),
+      radial-gradient(ellipse 42% 28% at 35% 8%,  rgba(225,232,246,0.9),  transparent 68%),
+      radial-gradient(ellipse 40% 27% at 62% 14%, rgba(210,220,240,0.9),  transparent 68%),
+      radial-gradient(ellipse 44% 30% at 88% 20%, rgba(235,240,250,0.9),  transparent 68%),
+      radial-gradient(ellipse 46% 30% at 15% 42%, rgba(200,212,235,0.9),  transparent 68%),
+      radial-gradient(ellipse 42% 28% at 45% 38%, rgba(230,236,248,0.9),  transparent 68%),
+      radial-gradient(ellipse 44% 30% at 75% 45%, rgba(215,225,242,0.9),  transparent 68%),
+      radial-gradient(ellipse 40% 27% at 5% 68%,  rgba(220,228,244,0.88), transparent 68%),
+      radial-gradient(ellipse 44% 30% at 32% 70%, rgba(240,244,252,0.9),  transparent 68%),
+      radial-gradient(ellipse 42% 28% at 60% 66%, rgba(205,216,238,0.88), transparent 68%),
+      radial-gradient(ellipse 46% 30% at 90% 72%, rgba(225,233,246,0.88), transparent 68%),
+      radial-gradient(ellipse 40% 27% at 20% 92%, rgba(215,224,242,0.85), transparent 68%),
+      radial-gradient(ellipse 44% 30% at 55% 90%, rgba(235,240,250,0.85), transparent 68%),
+      radial-gradient(ellipse 42% 28% at 82% 94%, rgba(200,212,235,0.85), transparent 68%);
+    background-repeat: no-repeat;
+    animation: mistDrift 16s ease-in-out infinite;
+  }
+  .fog-mist.mist-2{
+    mix-blend-mode: screen;
+    opacity:0.7;
+    background-color: transparent;
+    top:-40%; left:-40%; width:180%; height:180%;
+    animation: mistDrift 21s ease-in-out infinite reverse;
+    animation-delay: -7s;
+  }
+
+  @keyframes mistDrift{
+    0%{ transform: translate(0, 0) scale(1); }
+    50%{ transform: translate(-2.5%, 2%) scale(1.06); }
+    100%{ transform: translate(0, 0) scale(1); }
   }
 
   /* ---------- NAV ---------- */
@@ -472,6 +524,11 @@
 </head>
 <body>
 
+<div class="fog-intro" id="fogIntro" aria-hidden="true">
+  <div class="fog-mist"></div>
+  <div class="fog-mist mist-2"></div>
+</div>
+
 <nav class="nav">
   <div class="nav-inner">
     <div class="nav-brand">
@@ -652,6 +709,18 @@
 </footer>
 
 <script>
+  // fog intro: hold, then lift away and remove
+  (function(){
+    var intro = document.getElementById('fogIntro');
+    if(!intro) return;
+    setTimeout(function(){
+      intro.classList.add('lifting');
+    }, 1800);
+    setTimeout(function(){
+      if(intro && intro.parentNode) intro.remove();
+    }, 5900);
+  })();
+
   // scatter stars
   (function(){
     var field = document.getElementById('starfield');
